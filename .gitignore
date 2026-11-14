@@ -1,0 +1,46 @@
+# Secrets and environment configuration
+.env
+.env.*
+*.env
+deployment/cloudflare.env
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Private application data
+!database/
+database/*
+!database/schema.sql
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploaded satellite imagery
+images/
+
+# Cloudflare configuration and secrets
+deployment/cloudflare.env
+
+# Obsolete code
+sgis_server_obsolete/
+
+# Hardware testing logs
+*-hardware-log-*.txt

@@ -1,0 +1,35 @@
+# Build from the SGIS project root:
+# podman build -f backend/Containerfile -t sgis-cpp .
+
+FROM debian:bookworm-slim AS build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    g++ cmake make pkg-config libcpp-httplib-dev nlohmann-json3-dev \
+    libsqlite3-dev libssl-dev libopencv-dev libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+
+COPY backend/ /src/
+
+RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build build -j"$(nproc)"
+
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libcpp-httplib0.11 libsqlite3-0 libssl3 libcurl4 ca-certificates \
+    libopencv-core406 libopencv-imgcodecs406 libopencv-imgproc406 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY --from=build /src/build/sgis-server /app/sgis-server
+COPY --from=build /src/build/sgis-process /app/processor/sgis-process
+
+ENV SGIS_DATA_DIR=/data
+ENV SGIS_PROCESSOR=/app/processor/sgis-process
+
+EXPOSE 3000
+
+CMD ["/app/sgis-server"]

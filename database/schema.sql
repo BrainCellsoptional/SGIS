@@ -1,0 +1,47 @@
+CREATE TABLE IF NOT EXISTS images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    file_path TEXT,
+    notes TEXT,
+    long TEXT,
+    lat TEXT
+);
+
+CREATE TABLE IF NOT EXISTS settings (
+    id INTEGER PRIMARY KEY CHECK (id = 1),
+    water INTEGER,
+    vegetation INTEGER,
+    dirt INTEGER,
+    noise INTEGER,
+    parallel INTEGER,
+    shadows INTEGER,
+    lat REAL,
+    lng REAL,
+    rocks INTEGER NOT NULL DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS quick_locations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL COLLATE NOCASE UNIQUE,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL COLLATE NOCASE UNIQUE,
+    password_hash TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token_hash TEXT NOT NULL UNIQUE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    expires_at INTEGER NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_expires_at
+ON sessions(expires_at);

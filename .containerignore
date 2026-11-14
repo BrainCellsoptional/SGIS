@@ -1,0 +1,14 @@
+.git
+**/.git
+**/node_modules
+**/dist
+database
+images
+sgis_images
+sgis.db*
+backups
+archive
+sgis_server_obsolete
+logs
+**/*.backup*
+**/*.cleanup-backup

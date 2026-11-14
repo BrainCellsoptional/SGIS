@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: backend/Containerfile
+    image: localhost/sgis-cpp:latest
+    container_name: sgis-backend
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      SGIS_DATA_DIR: /data
+      SGIS_PROCESSOR: /app/processor/sgis-process
+    volumes:
+      - ../database:/data:Z
+      - ../images:/data/sgis_images:Z
+    restart: unless-stopped
+    stop_grace_period: 60s
+    networks:
+      - sgis-network
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: frontend/Containerfile
+    container_name: sgis-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - sgis-network
+
+networks:
+  sgis-network:
+    driver: bridge
